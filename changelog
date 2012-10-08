@@ -2,6 +2,12 @@
 ========== Change Log ==========
 ================================
 
+============ v1.1.1 ============
+# Upgraded the CodeIgniter to v2.1.3
+# Updated the Facebook PHP SDK to v3.2.0
+# Added the script redirect to fb_logout_url() method.
+# Clarified the fb_request_dialog() by change the parameter $name to $message.
+# Cleaned up code on several methods, allowing for code to be read easier.
 ============ v1.1.0 ============
 # Added fb_post_to_feed_dialog(), fb_send_dialog(), fb_request_dialog() and fb_fql() courtesy of Kimmik from CI Forums.
 # Resolved issues #4 & #6 regarding the demo login link being wrong. The variable was not encased in <?= ?>

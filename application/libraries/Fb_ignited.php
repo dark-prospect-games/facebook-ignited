@@ -49,6 +49,8 @@ class Fb_ignited {
 		 * 
 		 * After the system calls the function it will pass $request_ids to it. Make sure you accept and do with it as 
 		 * you will.
+		 * 
+		 * Your system must have CURL enabled to utilize this specific method
 		 */
 		$user = $this->CI->facebook->getUser();
 		$access_token = $this->CI->facebook->getAccessToken();
@@ -61,10 +63,10 @@ class Fb_ignited {
 			}
 		}
 		foreach ($request_ids as $value) {
-			$request_data = $this->CI->facebook->api('/' . $value);
+			$request_data = $this->CI->facebook->api("/{$value}");
 			if ($request_data['from']) {
-				$url = "http://graph.facebook.com/" . $value . "?access_token=" . $access_token;
-				$ch = curl_init("https://graph.facebook.com/" . $value . "?access_token=" . $access_token . "");
+				$url = "http://graph.facebook.com/{$value}/?access_token={$access_token}";
+				$ch = curl_init("https://graph.facebook.com/{$value}/?access_token={$access_token}");
 				curl_setopt($ch, CURLOPT_VERBOSE, 1);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -97,11 +99,11 @@ class Fb_ignited {
 		 * @param $perm - this is the permission that will be checked.
 		 * @param $extend - this will tell the function whether or not to extend the users permissions.
 		 */
-		$FQL = array("method" => "fql.query", "query" => "SELECT " . $perm . " FROM permissions WHERE uid = me()");
+		$FQL = array("method" => "fql.query", "query" => "SELECT {$perm} FROM permissions WHERE uid = me()");
 		$datas = $this->CI->facebook->api($FQL);
-		if ($datas)
+		if ($datas) {
 			return true;
-		else {
+		} else {
 			if ($extend === false) {
 				return false;
 			} else {
@@ -140,22 +142,19 @@ class Fb_ignited {
 		/**
 		 * This function is a wrapper for fql
 		 */
+		$access_token = $this->CI->facebook->getAccessToken();
 		if ($multi == true) {
 			$fqlmultiquery = '';
 			foreach ($fqlquery as $querykey => $query) {
 				$query = str_replace(' ', '+', $query);
-				$fqlmultiquery = $fqlmultiquery . '"' . $querykey . '":"' . $query . '",';
+				$fqlmultiquery = $fqlmultiquery . '"'.$querykey.'":"'.$query.'",';
 			}
-			$fql_multiquery_url = 'https://graph.facebook.com/'
-					. 'fql?q={' . $fqlmultiquery . '}'
-					. '&' . $this->CI->facebook->getAccessToken();
+			$fql_multiquery_url = "https://graph.facebook.com/fql?q={{$fqlmultiquery}}&{$access_token}";
 			$fql_multiquery_result = file_get_contents($fql_multiquery_url);
 			$fql_obj = json_decode($fql_multiquery_result, true);
 		} else {
 			$fqlquery = str_replace(' ', '+', $fqlquery);
-			$fql_query_url = 'https://graph.facebook.com/'
-					. 'fql?q=' . $fqlquery
-					. '&' . $this->CI->facebook->getAccessToken();
+			$fql_query_url = "https://graph.facebook.com/fql?q={{$fqlquery}}&{$access_token}"; 
 			$fql_query_result = file_get_contents($fql_query_url);
 			$fql_obj = json_decode($fql_query_result, true);
 		}
@@ -210,8 +209,7 @@ class Fb_ignited {
 					redirect($loc);
 				endif;
 				exit;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
@@ -247,7 +245,7 @@ class Fb_ignited {
 		$friends = $this->CI->facebook->api(array(
 			'method' => 'fql.query',
 			'query' => $fquery,
-				));
+		));
 		return $friends;
 	}
 
@@ -273,7 +271,7 @@ class Fb_ignited {
 		return $url;
 	}
 
-	function fb_logout_url($next = '') {
+	function fb_logout_url($next = '', $script = false) {
 		/**
 		 * This method creates a logout url that your users 
 		 * can be redirected towards. If the $next variable is set 
@@ -281,38 +279,38 @@ class Fb_ignited {
 		 * $next must be in the declared canvas or end with /
 		 */
 		$redirect = (substr($this->globals['fb_canvas'], -1) == '/') ? $this->globals['fb_canvas'] . $next : $this->globals['fb_canvas'] . '/' . $next;
-
 		$url = $this->CI->facebook->getLogoutUrl(array(
 			'next' => $redirect
-				));
-
+		));
+		if ($script == true) {
+			$url = "<script>top.location.href='" . $url . "'</script>";
+		}
 		return $url;
 	}
 
 	public function fb_post_to_feed_dialog($display, $link, $picture, $name, $caption, $description) {
-
 		/**
 		 * This function will generate a post to feed dialog
 		 */
 		$tofeed = "<script> 
-		FB.init({appId: '" . $this->CI->facebook->getAppId() . "', status: true, cookie: true});
-		function postToFeed() {
-			var obj = {
-			method: 'feed',
-			access_token: '" . $this->CI->facebook->getAccessToken() . "',
-			display: '" . $display . "',
-			link: '" . $link . "',
-			picture: '" . $picture . "',
-			name: '" . $name . "',
-			caption: '" . $caption . "',
-			description: '" . $description . "'
-			};
-			function callback(response) {
-			document.getElementById('msg').innerHTML = 'Post ID: ' + response['post_id'];
+			FB.init({appId: '{$this->globals['fb_appid']}', status: true, cookie: true});
+			function postToFeed() {
+				var obj = {
+					method: 'feed',
+					access_token: '{$this->CI->facebook->getAccessToken()}',
+					display: '{$display}',
+					link: '{$link}',
+					picture: '{$picture}',
+					name: '{$name}',
+					caption: '{$caption}',
+					description: '{$description}'
+				};
+				function callback(response) {
+					document.getElementById('msg').innerHTML = 'Post ID: ' + response['post_id'];
+				}
+				FB.ui(obj, callback);
 			}
-			FB.ui(obj, callback);
-		}
-		postToFeed();
+			postToFeed();
 		</script>";
 		return $tofeed;
 	}
@@ -374,51 +372,41 @@ class Fb_ignited {
 		return json_encode($data);
 	}
 
-	public function fb_request_dialog($display, $name) {
-
+	public function fb_request_dialog($display, $message) {
 		/**
 		 * This function will generate a request dialog
 		 */
 		$send = "<script>
-			FB.init({appId: '" . $this->CI->facebook->getAppId() . "', frictionlessRequests: true,});
-
+			FB.init({appId: '{$this->globals['fb_appid']}', frictionlessRequests: true,});
 			function sendrequest() {
 				FB.ui({
-				method: 'apprequests',
-				access_token: '" . $this->CI->facebook->getAccessToken() . "',
-				display: '" . $display . "',
-					message: '" . $name . "'
-
+					method: 'apprequests',
+					access_token: '{$this->CI->facebook->getAccessToken()}',
+					display: '{$display}',
+					message: '{$message}'
 				}, requestCallback);
 			}
-
-			function requestCallback(response) {
-
-			}
-
+			function requestCallback(response) {}
 			sendrequest();
 		</script>";
-
 		return $send;
 	}
 
 	public function fb_send_dialog($display, $link, $picture, $name, $to, $description) {
-
 		/**
 		 * This function will generate a send message dialog
 		 */
 		$send = "<script>
-			FB.init({appId: '" . $this->CI->facebook->getAppId() . "', xfbml: true, cookie: true});
-
+			FB.init({appId: '{$this->globals['fb_appid']}', xfbml: true, cookie: true});
 			FB.ui({
 				method: 'send',
-				access_token: '" . $this->CI->facebook->getAccessToken() . "',
-				display: '" . $display . "',
-				link: '" . $link . "',
-				picture: '" . $picture . "',
-				name: '" . $name . "',
-				description: '" . $description . "',
-				to: '" . $to . "'
+				access_token: '{$this->CI->facebook->getAccessToken()}',
+				display: '{$display}',
+				link: '{$link}',
+				picture: '{$picture}',
+				name: '{$name}',
+				description: '{$description}',
+				to: '{$to}'
 			});
 		</script>";
 

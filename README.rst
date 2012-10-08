@@ -1,15 +1,15 @@
 =====================================
-Facebook Ignited v1.1.0 Documentation
+Facebook Ignited v1.1.1 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
 and making their functionality more accessable.
 
 You can view CodeIgniter at http://codeigniter.com and Facebook PHP SDK at 
-https://github.com/facebook/php-sdk/ if you have any bugs regarding them please 
+https://github.com/facebook/facebook-php-sdk/ if you have any bugs regarding them please 
 check their coresponding sites. 
 
-As of this this version I am using CI v2.1.2 & FB SDK v3.1.1.
+As of this this version I am using CI v2.1.3 & FB SDK v3.2.0.
 
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
@@ -35,18 +35,18 @@ The following page you will need to change the variables to that found in your D
 	``application/config/fb_ignited.php``
 	
 One of the configurations you will need to pay close attention  to: ``$config['fb_apptype']`` If you set it to 
-iframe only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/`` 
+iframe only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``, 
 otherwise put the whole domain name excluding the ``http://`` or ``https://``.
 
 After that you can load the example page and start to learn from there!
 
 Once you have the system loaded for first time, please go and read: 
 
-https://github.com/deth4uall/Facebook-Ignited/wiki/Methods 
+https://github.com/Necromnius/Facebook-Ignited/wiki/Methods 
 
 It will explain what the features do. Please note that I will only provide limited support to 
-people who have edited their 'application/libraries/Fb_ignited.php' file. As stated at the top 
-of the file it can cause disruption of application stability, please wait for me to either reply with a fix 
+people who have edited their ``application/libraries/Fb_ignited.php`` file without a pull request. As stated at 
+the top of the file it can cause disruption of application stability, please wait for me to either reply with a fix 
 or upload a new version. I am quick to respond and will make every effort to find a solution.
 
 Instructions for Using Facebook Ignited
@@ -54,17 +54,33 @@ Instructions for Using Facebook Ignited
 
 In order for you to get the system started on other files you will need to call:
 
-	``$this->fb_me = $this->fb_ignited->fb_get_me();``
+	$this->fb_me = $this->fb_ignited->fb_get_me();
+	//  You can then check the status, if it hasn't already redirected.
+	if ($this->fb_me) {
+		echo "Welcome back, {$this->fb_me['first_name']}!";
+	} else {
+		echo "Welcome, Guest! Please login";
+	}
 
 This will allow you to check if they are logged in, and if they are authenticated, if either one is not 
-true it will redirect them to the correct page so that they may do so. It also allows you to view all of the 
-information from ->api('/me').
+true you can redirect them to the correct page so that they may do so by using ``->fb_get_me(true);``. 
+If the user has already authenticated ``$this->fb_me`` will hold all of the information from ``->api('/me')`` 
+via the OpenGraph API.
 
-Any and all Facebook functions can be called via the ``$this->fb_ignited->api()`` format. If it is not within 
-Facebook Ignited class it will call it from the Facebook class which is called via the fb_ignited system, acting 
-as a shell for Facebook SDK. 
+If you want to use the additional formatting for generating login/logout links just use the following code:
 
-As a added bonus the system now supports facebook credits, if you want use the system as it is create a database and 
+	if ($this->fb_me) {
+		$logout_url = $this->fb_ignited->fb_logout_url();
+	} else {
+		$login_url = $this->fb_ignited->fb_login_url();
+	}
+
+Facebook Ignited is a shell for Facebook PHP SDK, so any and all Facebook functions will be called automatically via the 
+``__call()`` "magic method" which allows you to do ``$this->fb_ignited->api()`` automatically (Instead of: 
+``$this->fb_ignited->facebook->api('/me')``) if it is not present in Facebook Ignited and is a native Facebook PHP SDK method. 
+This reduces the need for calling more than one class in your code.
+
+As a added bonus the system now supports Facebook Credits, if you want use the system as it is create a database and 
 use this database query::
 
 	CREATE TABLE `fb_item_store` (
@@ -85,6 +101,6 @@ use this database query::
 	) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 Also ensure that you have the database info for that database added into the ``/config/database.php`` file and that 
-you auto-load the database class. This will allow the facebook processing function to automatically add the items to 
-the fb_item_cache table so that users can grab them. You will need to make sure that you remove them from the 
-fb_item_cache table so that they do not get duplicates.
+you auto-load the database class. This will allow the Facebook processing function to automatically add the items to 
+the `fb_item_cache` table so that users can grab them. You will need to make sure that you remove them from the 
+`fb_item_cache` table so that they do not get duplicates.
