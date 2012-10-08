@@ -52,7 +52,7 @@ or upload a new version. I am quick to respond and will make every effort to fin
 Instructions for Using Facebook Ignited
 =======================================
 
-In order for you to get the system started on other files you will need to call:
+In order for you to get the system started on other files you will need to call::
 
 	$this->fb_me = $this->fb_ignited->fb_get_me();
 	//  You can then check the status, if it hasn't already redirected.
@@ -67,7 +67,7 @@ true you can redirect them to the correct page so that they may do so by using `
 If the user has already authenticated ``$this->fb_me`` will hold all of the information from ``->api('/me')`` 
 via the OpenGraph API.
 
-If you want to use the additional formatting for generating login/logout links just use the following code:
+If you want to use the additional formatting for generating login/logout links just use the following code::
 
 	if ($this->fb_me) {
 		$logout_url = $this->fb_ignited->fb_logout_url();
