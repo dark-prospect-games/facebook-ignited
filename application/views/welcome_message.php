@@ -42,7 +42,7 @@
 			}
 
 		</style>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<script src="//connect.facebook.net/en_US/all.js"></script>
 		<script>
 			$(document).ready(function(){
@@ -138,7 +138,7 @@
 	<p>The corresponding controller for this page is found at:</p>
 	<code>application/controllers/welcome.php</code>
 
-	<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>
+	<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="/user_guide/">User Guide</a>.</p>
 
 	<p>You can view the source code at: <a href="https://github.com/Necromnius/Facebook-Ignited/" target="_blank">https://github.com/Necromnius/Facebook-Ignited/</a></p>
 
@@ -154,17 +154,15 @@
 	</p>
 	<h3>Test out the process credit's method:</h3>
 	<form name ="place_order" id="order_form" action="#">
-		<img src="https://www.facebook.com/images/gifts/21.png">
-		<input type="hidden" name="item_id" value="1" id="item_id">
-		<img src="https://developers.facebook.com/attachment/credits_sm.png" 
-			 height="25px">
-
-
+		<img src="https://www.facebook.com/images/gifts/21.png" />
+		<input type="hidden" name="item_id" value="1" id="item_id" />
+		<img src="https://developers.facebook.com/attachment/credits_sm.png" height="25px" />
 		<a onclick="placeOrder(); return false;">
-			<img src="https://www.facebook.com/images/credits/paybutton.png">
+			<img src="https://www.facebook.com/images/credits/paybutton.png" />
 		</a>
 	</form>
-	<p><br />Page rendered in {elapsed_time} seconds</p>
+	<br />
+	<p>Page rendered in {elapsed_time} seconds</p>
 
 </body>
 </html>
