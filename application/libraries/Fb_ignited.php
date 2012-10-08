@@ -240,9 +240,9 @@ class Fb_ignited {
 
 	public function fb_list_friends($value = "uid", $list = "") {
 		if ($list == "full") {
-			$fquery = "SELECT " . $value . " FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())";
+			$fquery = "SELECT {$value} FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())";
 		} else {
-			$fquery = "SELECT " . $value . " FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 'true'";
+			$fquery = "SELECT {$value} FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 'true'";
 		}
 		$friends = $this->CI->facebook->api(array(
 			'method' => 'fql.query',
@@ -410,7 +410,6 @@ class Fb_ignited {
 				to: '{$to}'
 			});
 		</script>";
-
 		return $send;
 	}
 
@@ -441,5 +440,4 @@ class Fb_ignited {
 		}
 		return $param_array;
 	}
-
 }

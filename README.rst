@@ -13,7 +13,7 @@ As of this this version I am using CI v2.1.3 & FB SDK v3.2.0.
 
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
--deth4uall aka Rev. Alfonso E Martinez, III
+-Necromnius aka Rev. Alfonso E Martinez, III
 
 
 Instructions for Installation
@@ -25,17 +25,17 @@ You will need a few things for this to work correctly:
 2) Hosting with PHP support
 3) A facebook application
 
-You can register your app at http://www.facebook.com/developers
+You can register your app at https://developers.facebook.com/apps
 
 Once you have all those steps done, and you have set up your hosting and added that to your
-app in the developers panel of facebook. You will need to edit a few files in this code.
+app in the developers panel of Facebook. You will need to edit a few files in this code.
 
 The following page you will need to change the variables to that found in your Dev Panel.
 	
 	``application/config/fb_ignited.php``
 	
 One of the configurations you will need to pay close attention  to: ``$config['fb_apptype']`` If you set it to 
-iframe only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``, 
+``iframe`` only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``, 
 otherwise put the whole domain name excluding the ``http://`` or ``https://``.
 
 After that you can load the example page and start to learn from there!
@@ -79,6 +79,9 @@ Facebook Ignited is a shell for Facebook PHP SDK, so any and all Facebook functi
 ``__call()`` "magic method" which allows you to do ``$this->fb_ignited->api()`` automatically (Instead of: 
 ``$this->fb_ignited->facebook->api('/me')``) if it is not present in Facebook Ignited and is a native Facebook PHP SDK method. 
 This reduces the need for calling more than one class in your code.
+
+Accepting Facebook Credits
+==========================
 
 As a added bonus the system now supports Facebook Credits, if you want use the system as it is create a database and 
 use this database query::
