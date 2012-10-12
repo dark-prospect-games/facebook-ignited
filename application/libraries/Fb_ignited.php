@@ -64,11 +64,11 @@ class Fb_ignited {
 				$this->CI->$file->$method($request_ids);
 			}
 		}
+		$ch = curl_init();
 		foreach ($request_ids as $value) {
 			$request_data = $this->CI->facebook->api("/{$value}");
 			if ($request_data['from']) {
-				$url = "http://graph.facebook.com/{$value}/?access_token={$access_token}";
-				$ch = curl_init("https://graph.facebook.com/{$value}/?access_token={$access_token}");
+				curl_setopt($ch, CURLOPT_URL, "https://graph.facebook.com/{$value}/?access_token={$access_token}");
 				curl_setopt($ch, CURLOPT_VERBOSE, 1);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_HEADER, 0);
