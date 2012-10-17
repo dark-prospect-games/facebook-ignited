@@ -290,6 +290,19 @@ class Fb_ignited {
 		return $url;
 	}
 
+	public function fb_notification($message,$user_id = NULL) {
+		if ($user_id === NULL) {
+			$user_id = $this->CI->facebook->getUser();
+		}
+		$data = array(
+			'href'=> $this->globals['fb_canvas'],
+			'access_token'=> $this->CI->facebook->getAccessToken(),
+			'template'=> $message
+		);
+		$send_result = $this->CI->facebook->api("/$user_id/notifications", 'post', $data);
+		return $send_result;
+	}
+
 	public function fb_post_to_feed_dialog($display, $link, $picture, $name, $caption, $description) {
 		/**
 		 * This function will generate a post to feed dialog
