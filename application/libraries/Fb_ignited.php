@@ -290,7 +290,7 @@ class Fb_ignited {
 		return $url;
 	}
 
-	public function fb_notification($message,$user_id = NULL) {
+	public function fb_notification($message, $user_id = NULL) {
 		if ($user_id === NULL) {
 			$user_id = $this->CI->facebook->getUser();
 		}

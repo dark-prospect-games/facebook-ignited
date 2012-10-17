@@ -4,7 +4,8 @@
 
 ============ v1.1.2 ============
 # Adding more defined visibility to all methods, preventing users from accessing the $this->globals variable.
-# Adding support for file uploads via Facebook Ignited.
+# Adding support for file uploads via Facebook Ignited in the fb_config.php
+# Added a new method fb_notification() to handle Facebook notifications.
 ============ v1.1.1 ============
 # Upgraded the CodeIgniter to v2.1.3
 # Updated the Facebook PHP SDK to v3.2.0
