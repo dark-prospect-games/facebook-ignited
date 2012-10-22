@@ -17,8 +17,13 @@ class Fb_ignited {
 		 * This grabs the variables from you config/fb_ignited.php file and 
 		 * stores them in the globals variable, while passing the below three
 		 * to the Facebook SDK when it is called. The instance of CodeIgniter is 
-		 * set to $this->CI in order to allow usage from the whole class.
+		 * set to $this->CI in order to allow usage from the whole class. Additionally
+		 * it parses the query strings for the `state` and `code` variables sent to the 
+		 * app so that there won't be constant redirection.
 		 */
+		parse_str($_SERVER['QUERY_STRING'], $fb_query_strings);
+		$_REQUEST['state'] = $fb_query_strings['state'];
+		$_REQUEST['code']  = $fb_query_strings['code']; 
 		$fb_params = $this->fb_set_globals($params);
 		$this->CI = & get_instance();
 		$this->CI->load->library('facebook', $fb_params);

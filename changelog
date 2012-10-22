@@ -6,6 +6,7 @@
 # Adding more defined visibility to all methods, preventing users from accessing the $this->globals variable.
 # Adding support for file uploads via Facebook Ignited in the fb_config.php
 # Added a new method fb_notification() to handle Facebook notifications.
+# Added a fix for the constant redirect issue for some users not enabling query strings.
 ============ v1.1.1 ============
 # Upgraded the CodeIgniter to v2.1.3
 # Updated the Facebook PHP SDK to v3.2.0
