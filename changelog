@@ -2,6 +2,8 @@
 ========== Change Log ==========
 ================================
 
+============ v1.2.0 ============
+# Branched the full install over into it's own branch and formatted master for sparks generation.
 ============ v1.1.2 ============
 # Adding more defined visibility to all methods, preventing users from accessing the $this->globals variable.
 # Adding support for file uploads via Facebook Ignited in the fb_config.php
