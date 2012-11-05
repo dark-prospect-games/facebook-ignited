@@ -1,5 +1,5 @@
 =====================================
-Facebook Ignited v1.1.2 Documentation
+Facebook Ignited v1.2.0 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
@@ -10,6 +10,9 @@ https://github.com/facebook/facebook-php-sdk/ if you have any bugs regarding the
 check their coresponding sites. 
 
 As of this this version I am using CI v2.1.3 & FB SDK v3.2.0.
+
+If you are looking for a full install you can download it from the ``full-install`` branch at 
+https://github.com/Necromnius/Facebook-Ignited/tree/full-install
 
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
