@@ -36,6 +36,10 @@ app in the developers panel of Facebook. You will need to edit a few files in th
 The following page you will need to change the variables to that found in your Dev Panel.
 	
 	``application/config/fb_ignited.php``
+
+	or 
+
+	``sparks/fb_ignited/config/fb_ignited.php``
 	
 One of the configurations you will need to pay close attention  to: ``$config['fb_apptype']`` If you set it to 
 ``iframe`` only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``, 
