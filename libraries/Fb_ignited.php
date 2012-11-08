@@ -22,8 +22,8 @@ class Fb_ignited {
 		 * app so that there won't be constant redirection.
 		 */
 		parse_str($_SERVER['QUERY_STRING'], $fb_query_strings);
-		$_REQUEST['state'] = $fb_query_strings['state'];
-		$_REQUEST['code']  = $fb_query_strings['code']; 
+		if (isset($fb_query_strings['state'])) $_REQUEST['state'] = $fb_query_strings['state'];
+		if (isset($fb_query_strings['code'])) $_REQUEST['code']  = $fb_query_strings['code']; 
 		$fb_params = $this->fb_set_globals($params);
 		$this->CI = & get_instance();
 		$this->CI->load->library('facebook', $fb_params);
