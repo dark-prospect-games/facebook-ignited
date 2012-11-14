@@ -236,7 +236,7 @@ class Fb_ignited {
 		 * This function checks to see if the user has liked the application or not.
 		 */
 		$user = $this->CI->facebook->getUser();
-		$request = $this->CI->facebook->api("$user/likes/APP_ID");
+		$request = $this->CI->facebook->api("/$user/likes/APP_ID");
 		if ($request['data'] || $request->data)
 			return true;
 		else
