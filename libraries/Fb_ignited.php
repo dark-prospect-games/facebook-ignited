@@ -107,8 +107,9 @@ class Fb_ignited {
 		 * @param $extend - this will tell the function whether or not to extend the users permissions.
 		 */
 		$FQL = array("method" => "fql.query", "query" => "SELECT {$perm} FROM permissions WHERE uid = me()");
-		$datas = $this->CI->facebook->api($FQL);
-		if ($datas) {
+		$data = $this->CI->facebook->api($FQL);
+		$permission = implode(',', array_keys( array_diff($data[0], array(1) ) ) ); 
+		if (!$permission) {
 			return true;
 		} else {
 			if ($extend === false) {

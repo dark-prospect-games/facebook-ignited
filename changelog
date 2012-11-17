@@ -2,6 +2,8 @@
 ========== Change Log ==========
 ================================
 
+============ v1.2.2 ============
+# Fixed an issue where the fb_check_permissions() method was always returning true, thanks to clearright via forums.
 ============ v1.2.1 ============
 # Merged Pull Request #11 by dcostalis: Fixed the autoloader config file for Spark.
 # Merged Pull Request #12 by dcostalis: Added a conditional to the translating query strings to $_REQUEST[] if existent only.
