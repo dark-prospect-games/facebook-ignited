@@ -2,6 +2,13 @@
 ========== Change Log ==========
 ================================
 
+============ v1.2.2 ============
+# Fixed an issue where the fb_check_permissions() method was always returning true, thanks to clearright via forums.
+============ v1.2.1 ============
+# Merged Pull Request #11 by dcostalis: Fixed the autoloader config file for Spark.
+# Merged Pull Request #12 by dcostalis: Added a conditional to the translating query strings to $_REQUEST[] if existent only.
+============ v1.2.0 ============
+# Branched the full install over into it's own branch and formatted master for sparks generation.
 ============ v1.1.2 ============
 # Adding more defined visibility to all methods, preventing users from accessing the $this->globals variable.
 # Adding support for file uploads via Facebook Ignited in the fb_config.php

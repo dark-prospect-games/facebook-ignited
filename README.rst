@@ -1,5 +1,5 @@
 =====================================
-Facebook Ignited v1.1.2 Documentation
+Facebook Ignited v1.2.2 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
@@ -11,6 +11,10 @@ check their coresponding sites.
 
 As of this this version I am using CI v2.1.3 & FB SDK v3.2.0.
 
+If you are looking for a full install you can download it from the ``full-install`` branch at:
+
+https://github.com/Necromnius/Facebook-Ignited/tree/full-install
+
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
 -Necromnius aka Rev. Alfonso E Martinez, III
@@ -20,7 +24,7 @@ Instructions for Installation
 =============================
 
 You will need a few things for this to work correctly: 
-	
+
 1) This code 
 2) Hosting with PHP support
 3) A facebook application
@@ -31,9 +35,13 @@ Once you have all those steps done, and you have set up your hosting and added t
 app in the developers panel of Facebook. You will need to edit a few files in this code.
 
 The following page you will need to change the variables to that found in your Dev Panel.
-	
+
 	``application/config/fb_ignited.php``
-	
+
+	or 
+
+	``sparks/fb_ignited/config/fb_ignited.php``
+
 One of the configurations you will need to pay close attention  to: ``$config['fb_apptype']`` If you set it to 
 ``iframe`` only use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``, 
 otherwise put the whole domain name excluding the ``http://`` or ``https://``.
@@ -42,7 +50,7 @@ After that you can load the example page and start to learn from there!
 
 Once you have the system loaded for first time, please go and read: 
 
-https://github.com/Necromnius/Facebook-Ignited/wiki/Methods 
+	https://github.com/Necromnius/Facebook-Ignited/wiki/Methods 
 
 It will explain what the features do. Please note that I will only provide limited support to 
 people who have edited their ``application/libraries/Fb_ignited.php`` file without a pull request. As stated at 
@@ -57,9 +65,9 @@ In order for you to get the system started on other files you will need to call:
 	$this->fb_me = $this->fb_ignited->fb_get_me();
 	//  You can then check the status, if it hasn't already redirected.
 	if ($this->fb_me) {
-		echo "Welcome back, {$this->fb_me['first_name']}!";
+	echo "Welcome back, {$this->fb_me['first_name']}!";
 	} else {
-		echo "Welcome, Guest! Please login";
+	echo "Welcome, Guest! Please login";
 	}
 
 This will allow you to check if they are logged in, and if they are authenticated, if either one is not 
@@ -70,9 +78,9 @@ via the OpenGraph API.
 If you want to use the additional formatting for generating login/logout links just use the following code::
 
 	if ($this->fb_me) {
-		$logout_url = $this->fb_ignited->fb_logout_url();
+	$logout_url = $this->fb_ignited->fb_logout_url();
 	} else {
-		$login_url = $this->fb_ignited->fb_login_url();
+	$login_url = $this->fb_ignited->fb_login_url();
 	}
 
 Facebook Ignited is a shell for Facebook PHP SDK, so any and all Facebook functions will be called automatically via the 
