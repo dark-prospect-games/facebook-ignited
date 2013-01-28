@@ -1,5 +1,2 @@
-.hg
-.hgtags
-.hgignore
-nbproject/
+.idea
 .DS_Store

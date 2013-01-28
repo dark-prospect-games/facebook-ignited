@@ -21,7 +21,7 @@ Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
 
 Instructions for Installation
-=============================
+-----------------------------
 
 You will need a few things for this to work correctly: 
 	
@@ -58,7 +58,7 @@ the top of the file it can cause disruption of application stability, please wai
 or upload a new version. I am quick to respond and will make every effort to find a solution.
 
 Instructions for Using Facebook Ignited
-=======================================
+---------------------------------------
 
 In order for you to get the system started on other files you will need to call::
 
@@ -89,7 +89,7 @@ Facebook Ignited is a shell for Facebook PHP SDK, so any and all Facebook functi
 This reduces the need for calling more than one class in your code.
 
 Accepting Facebook Credits
-==========================
+--------------------------
 
 As a added bonus the system now supports Facebook Credits, if you want use the system as it is create a database and 
 use this database query::
