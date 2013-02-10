@@ -1,5 +1,5 @@
 =====================================
-Facebook Ignited v1.2.2 Documentation
+Facebook Ignited v1.3.0 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
@@ -9,7 +9,7 @@ You can view CodeIgniter at http://codeigniter.com and Facebook PHP SDK at
 https://github.com/facebook/facebook-php-sdk/ if you have any bugs regarding them please 
 check their coresponding sites. 
 
-As of this this version I am using CI v2.1.3 & FB SDK v3.2.0.
+As of this this version I am using CI v2.1.3 & FB SDK v3.2.1.
 
 If you are looking for a full install you can download it from the ``full-install`` branch at:
 
@@ -60,9 +60,16 @@ or upload a new version. I am quick to respond and will make every effort to fin
 Instructions for Using Facebook Ignited
 ---------------------------------------
 
-In order for you to get the system started on other files you will need to call::
+In order for you to get the system started on other files you will need to call:
 
-	$this->fb_me = $this->fb_ignited->fb_get_me();
+.. code-block:: php
+
+	// Try to get the user details or catch the exception.
+	try {
+		$this->fb_me = $this->fb_ignited->fb_get_me();
+	} catch (FBIgnitedException $e) {
+		echo "There was an error trying to get your facebook details, try reloading page to try again.";
+	}
 	//  You can then check the status, if it hasn't already redirected.
 	if ($this->fb_me) {
 		echo "Welcome back, {$this->fb_me['first_name']}!";
@@ -75,7 +82,9 @@ true you can redirect them to the correct page so that they may do so by using `
 If the user has already authenticated ``$this->fb_me`` will hold all of the information from ``->api('/me')`` 
 via the OpenGraph API.
 
-If you want to use the additional formatting for generating login/logout links just use the following code::
+If you want to use the additional formatting for generating login/logout links just use the following code:
+
+.. code-block:: php
 
 	if ($this->fb_me) {
 		$logout_url = $this->fb_ignited->fb_logout_url();
@@ -92,7 +101,9 @@ Accepting Facebook Credits
 --------------------------
 
 As a added bonus the system now supports Facebook Credits, if you want use the system as it is create a database and 
-use this database query::
+use this database query:
+
+.. code-block:: sql
 
 	CREATE TABLE `fb_item_store` (
 	`item_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,

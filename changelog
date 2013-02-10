@@ -2,6 +2,11 @@
 ========== Change Log ==========
 ================================
 
+============ v1.3.0 ============
+# Added a new FBIgnitedException class to handle the exceptions thrown from FacebookApiException class.
+# Facebook Ignited now throws exceptions when there is an error from itself or from Facebook class.
+# Added a new config 'fb_logexcept' which determines if FBIgnitedException class will send logs to PHP error_log().
+# fb_fql() no longer has 'multiquery' parameter, it handles multiple or single queries depending on value you pass it.
 ============ v1.2.2 ============
 # Updated the Facebook PHP SDK to v3.2.1
 # Fixed an issue where the fb_check_permissions() method was always returning true, thanks to clearright via forums.
