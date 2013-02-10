@@ -1,5 +1,5 @@
 =====================================
-Facebook Ignited v1.2.2 Documentation
+Facebook Ignited v1.3.0 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
@@ -64,7 +64,12 @@ In order for you to get the system started on other files you will need to call:
 
 .. code-block:: php
 
-	$this->fb_me = $this->fb_ignited->fb_get_me();
+	// Try to get the user details or catch the exception.
+	try {
+		$this->fb_me = $this->fb_ignited->fb_get_me();
+	} catch (FBIgnitedException $e) {
+		echo "There was an error trying to get your facebook details, try reloading page to try again.";
+	}
 	//  You can then check the status, if it hasn't already redirected.
 	if ($this->fb_me) {
 		echo "Welcome back, {$this->fb_me['first_name']}!";
