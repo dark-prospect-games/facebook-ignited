@@ -44,7 +44,7 @@ class Fb_ignited {
 			try {
 				$value = wrap_call_user_func_array($this->CI->facebook, $method, $params);
 			} catch (FacebookApiException $e) {
-				throw new FBIgnitedException("Error trying {$method}(): " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("Error trying {$method}(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
 		} else {
 			throw new FBIgnitedException("Could not find the method {$method} in Facebook Class.", null, null, $this->globals['fb_logexcept']);
@@ -84,7 +84,7 @@ class Fb_ignited {
 				try {
 					$result = $this->CI->facebook->api($full_request_id, "DELETE");
 				} catch (FacebookApiException $e) {
-					throw new FBIgnitedException($e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+					throw new FBIgnitedException($e->getMessage(), $e, $this->globals['fb_logexcept']);
 				}
 				if ($result) {
 					if (strlen($result_value) > 0) {
@@ -109,7 +109,7 @@ class Fb_ignited {
 		try {
 			$data = $this->fb_fql("SELECT {$perm} FROM permissions WHERE uid = me()");
 		} catch (FBIgnitedException $e) {
-			throw new FBIgnitedException("fb_fql() : " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_fql() : " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 		$permission = implode(',', array_keys(array_diff($data[0], array(1))));
 		if (!$permission) {
@@ -140,7 +140,7 @@ class Fb_ignited {
 		try {
 			$eventID = $this->CI->facebook->api($param);
 		} catch (FacebookApiException $e) {
-			throw new FBIgnitedException("fb_create_event() - Facebook::api() exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_create_event() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 
 		return $eventID;
@@ -151,18 +151,18 @@ class Fb_ignited {
 			try {
 				$feed_id = $this->CI->facebook->api("/$id/feed", 'post', $values);
 			} catch (FacebookApiException $e) {
-				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
 			if (is_numeric($feed_id)) {
 				return $feed_id;
 			} else {
-				throw new FBIgnitedException("fb_feed() - Facebook::api() returned a non-numeric value.", null, null, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_feed() - Facebook::api() returned a non-numeric value.", null, $this->globals['fb_logexcept']);
 			}
 		} elseif ($method == "delete") {
 			try {
 				$response = $this->CI->facebok->api("/$id", 'delete');
 			} catch (FBIgnitedException $e) {
-				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
 
 			return $response;
@@ -179,7 +179,7 @@ class Fb_ignited {
 		try {
 			$fql_obj = $this->CI->facebook->api(array("method" => "fql.query", "query" => $fqlquery));
 		} catch (FacebookApiException $e) {
-			throw new FBIgnitedException("fb_fql() - Facebook::api() exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_fql() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 
 		return json_decode($fql_obj);
@@ -214,7 +214,7 @@ class Fb_ignited {
 			try {
 				$me = $this->CI->facebook->api('/me');
 			} catch (FacebookApiException $e) {
-				throw new FBIgnitedException("fb_get_me(): ".$e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_get_me(): ".$e->getMessage(), $e, $this->globals['fb_logexcept']);
 				return false;
 			}
 			return $me;
@@ -237,7 +237,7 @@ class Fb_ignited {
 		try {
 			$datas = $this->fb_fql("SELECT bookmarked FROM permissions WHERE uid = me()");
 		} catch (FBIgnitedException $e) {
-			throw new FBIgnitedException("fb_is_bookmarked(): " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_is_bookmarked(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 		if ($datas)
 			return true;
@@ -252,7 +252,7 @@ class Fb_ignited {
 		try {
 			$request = $this->CI->facebook->api("/{$this->userid}/likes/APP_ID");
 		} catch (FacebookApiException $e) {
-			throw new FBIgnitedException("fb_is_liked() - exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_is_liked() - exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 		if ($request['data'] || $request->data)
 			return true;
@@ -269,7 +269,7 @@ class Fb_ignited {
 		try {
 			$friends = $this->fb_fql($fquery);
 		} catch (FBIgnitedException $e) {
-			throw new FBIgnitedException("fb_list_friends(): " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_list_friends(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 
 		return $friends;
@@ -328,7 +328,7 @@ class Fb_ignited {
 		try {
 			$send_result = $this->CI->facebook->api("/$user_id/notifications", 'post', $data);
 		} catch (FacebookApiException $e) {
-			throw new FBIgnitedException("fb_notification() - exception caught: " . $e->getMessage(), $e->getCode(), $e, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("fb_notification() - exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 
 		return $send_result;
@@ -370,7 +370,7 @@ class Fb_ignited {
 		$data = array('content' => array());
 		$request = $this->CI->facebook->getSignedRequest();
 		if ($request == null) {
-			throw new FBIgnitedException("Bad signed request in fb_process_credits()", null, null, $this->globals['fb_logexcept']);
+			throw new FBIgnitedException("Bad signed request in fb_process_credits()", null, $this->globals['fb_logexcept']);
 		}
 		$me = $this->fb_get_me();
 		$payload = $request['credits'];
