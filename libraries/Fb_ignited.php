@@ -220,7 +220,7 @@ class Fb_ignited {
 			return $me;
 		} else {
 			if ($redirect == true) {
-				$loc = $this->fb_login_url();
+				$loc = $this->fb_login_url(array('script'=>$script));
 				if ($script == true){
 					echo $loc;
 				} else {
@@ -281,17 +281,17 @@ class Fb_ignited {
 		 * can be redirected towards. If the $script variable is set to true
 		 * we also include the javascript to redirect them to the location.
 		 */
-		if ($params['scope'] == '') {
+		if (!isset($params['scope'])) {
 			$params['scope'] = $this->globals['fb_auth'];
 		}
-		if ($params['redirect'] == '') {
+		if (!isset($params['redirect'])) {
 			$params['redirect'] = $this->globals['fb_canvas'];
 		}
 		$url = $this->CI->facebook->getLoginUrl(array(
 			'scope' => $params['scope'],
 			'redirect_uri' => $params['redirect']
 		));
-		if ($params['script'] == true) {
+		if (isset($params['script']) && $params['script'] == true) {
 			$url = "<script>top.location.href='" . $url . "'</script>";
 		}
 
