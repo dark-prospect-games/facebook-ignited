@@ -9,7 +9,7 @@ You can view CodeIgniter at http://codeigniter.com and Facebook PHP SDK at
 https://github.com/facebook/facebook-php-sdk/ if you have any bugs regarding them please 
 check their coresponding sites. 
 
-As of this this version I am using CI v2.1.3 & FB SDK v3.2.1.
+As of this this version I am using CI v2.1.3 & FB SDK v3.2.2.
 
 If you are looking for a full install you can download it from the ``full-install`` branch at:
 
