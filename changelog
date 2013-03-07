@@ -7,6 +7,8 @@
 # Facebook Ignited now throws exceptions when there is an error from itself or from Facebook class.
 # Added a new config 'fb_logexcept' which determines if FBIgnitedException class will send logs to PHP error_log().
 # fb_fql() no longer has 'multiquery' parameter, it handles multiple or single queries depending on value you pass it.
+# Resolved some issues where notices were being thrown from one of the functions due to a missing index on an array.
+# Reolved issue #14 by making sure that the script tag is sent to fb_login_url().
 ============ v1.2.2 ============
 # Updated the Facebook PHP SDK to v3.2.1
 # Fixed an issue where the fb_check_permissions() method was always returning true, thanks to clearright via forums.
