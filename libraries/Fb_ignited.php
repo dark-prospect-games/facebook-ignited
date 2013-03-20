@@ -3,6 +3,7 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
+include_once('Facebook.php');
 include_once('FBIgnitedException.php');
 
 class Fb_ignited {
@@ -26,11 +27,11 @@ class Fb_ignited {
 		 */
 		parse_str($_SERVER['QUERY_STRING'], $fb_query_strings);
 		if (isset($fb_query_strings['state'])) $_REQUEST['state'] = $fb_query_strings['state'];
-		if (isset($fb_query_strings['code'])) $_REQUEST['code'] = $fb_query_strings['code'];
-		$fb_params = $this->fb_set_globals($params);
-		$this->CI = & get_instance();
-		$this->CI->load->library('facebook', $fb_params);
-		$this->userid = $this->CI->facebook->getUser();
+		if (isset($fb_query_strings['code']))  $_REQUEST['code']  = $fb_query_strings['code'];
+        $this->CI       = & get_instance();
+		$fb_params      = $this->fb_set_globals($params);
+		$this->facebook = new Facebook($fb_params);
+		$this->userid   = $this->facebook->getUser();
 	}
 
 	function __call($method, $params) {
@@ -40,9 +41,9 @@ class Fb_ignited {
 		 * If it does not then it returns a false which the user can use to determine what to do.
 		 */
 		$this->CI->load->helper('params');
-		if (method_exists($this->CI->facebook, $method)) {
+		if (method_exists($this->facebook, $method)) {
 			try {
-				$value = wrap_call_user_func_array($this->CI->facebook, $method, $params);
+				$value = wrap_call_user_func_array($this->facebook, $method, $params);
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("Error trying {$method}(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
@@ -78,11 +79,11 @@ class Fb_ignited {
 			}
 		}
 		foreach ($request_ids as $value) {
-			$request_data = $this->CI->facebook->api("/{$value}");
+			$request_data = $this->facebook->api("/{$value}");
 			if ($request_data['from']) {
 				$full_request_id = $value . "_" . $this->userid;
 				try {
-					$result = $this->CI->facebook->api($full_request_id, "DELETE");
+					$result = $this->facebook->api($full_request_id, "DELETE");
 				} catch (FacebookApiException $e) {
 					throw new FBIgnitedException($e->getMessage(), $e, $this->globals['fb_logexcept']);
 				}
@@ -138,7 +139,7 @@ class Fb_ignited {
 			'callback' => $callback
 		);
 		try {
-			$eventID = $this->CI->facebook->api($param);
+			$eventID = $this->facebook->api($param);
 		} catch (FacebookApiException $e) {
 			throw new FBIgnitedException("fb_create_event() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
@@ -149,7 +150,7 @@ class Fb_ignited {
 	public function fb_feed($method, $id = null, $values = null) {
 		if ($method == "post") {
 			try {
-				$feed_id = $this->CI->facebook->api("/$id/feed", 'post', $values);
+				$feed_id = $this->facebook->api("/$id/feed", 'post', $values);
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
@@ -160,7 +161,7 @@ class Fb_ignited {
 			}
 		} elseif ($method == "delete") {
 			try {
-				$response = $this->CI->facebok->api("/$id", 'delete');
+				$response = $this->facebok->api("/$id", 'delete');
 			} catch (FBIgnitedException $e) {
 				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
@@ -177,7 +178,7 @@ class Fb_ignited {
 			$fqlquery = json_encode($fqlquery);
 		}
 		try {
-			$fql_obj = $this->CI->facebook->api(array("method" => "fql.query", "query" => $fqlquery));
+			$fql_obj = $this->facebook->api(array("method" => "fql.query", "query" => $fqlquery));
 		} catch (FacebookApiException $e) {
 			throw new FBIgnitedException("fb_fql() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
@@ -212,7 +213,7 @@ class Fb_ignited {
 		$this->CI->load->helper('url');
 		if ($this->userid) {
 			try {
-				$me = $this->CI->facebook->api('/me');
+				$me = $this->facebook->api('/me');
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_get_me(): ".$e->getMessage(), $e, $this->globals['fb_logexcept']);
 				return false;
@@ -250,7 +251,7 @@ class Fb_ignited {
 		 * This function checks to see if the user has liked the application or not.
 		 */
 		try {
-			$request = $this->CI->facebook->api("/{$this->userid}/likes/APP_ID");
+			$request = $this->facebook->api("/{$this->userid}/likes/APP_ID");
 		} catch (FacebookApiException $e) {
 			throw new FBIgnitedException("fb_is_liked() - exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
@@ -287,7 +288,7 @@ class Fb_ignited {
 		if (!isset($params['redirect'])) {
 			$params['redirect'] = $this->globals['fb_canvas'];
 		}
-		$url = $this->CI->facebook->getLoginUrl(array(
+		$url = $this->facebook->getLoginUrl(array(
 			'scope' => $params['scope'],
 			'redirect_uri' => $params['redirect']
 		));
@@ -306,7 +307,7 @@ class Fb_ignited {
 		 * $next must be in the declared canvas or end with /
 		 */
 		$redirect = (substr($this->globals['fb_canvas'], -1) == '/') ? $this->globals['fb_canvas'] . $next : $this->globals['fb_canvas'] . '/' . $next;
-		$url = $this->CI->facebook->getLogoutUrl(array(
+		$url = $this->facebook->getLogoutUrl(array(
 			'next' => $redirect
 		));
 		if ($script == true) {
@@ -318,15 +319,15 @@ class Fb_ignited {
 
 	public function fb_notification($message, $user_id = null) {
 		if ($user_id === null) {
-			$user_id = $this->CI->facebook->getUser();
+			$user_id = $this->facebook->getUser();
 		}
 		$data = array(
 			'href' => $this->globals['fb_canvas'],
-			'access_token' => $this->CI->facebook->getAccessToken(),
+			'access_token' => $this->facebook->getAccessToken(),
 			'template' => $message
 		);
 		try {
-			$send_result = $this->CI->facebook->api("/$user_id/notifications", 'post', $data);
+			$send_result = $this->facebook->api("/$user_id/notifications", 'post', $data);
 		} catch (FacebookApiException $e) {
 			throw new FBIgnitedException("fb_notification() - exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
@@ -347,7 +348,7 @@ class Fb_ignited {
 			function postToFeed() {
 				var obj = {
 					method: 'feed',
-					access_token: '{$this->CI->facebook->getAccessToken()}',
+					access_token: '{$this->facebook->getAccessToken()}',
 					display: '{$display}',
 					link: '{$link}',
 					picture: '{$picture}',
@@ -368,7 +369,7 @@ class Fb_ignited {
 
 	public function fb_process_credits() {
 		$data = array('content' => array());
-		$request = $this->CI->facebook->getSignedRequest();
+		$request = $this->facebook->getSignedRequest();
 		if ($request == null) {
 			throw new FBIgnitedException("Bad signed request in fb_process_credits()", null, $this->globals['fb_logexcept']);
 		}
@@ -432,7 +433,7 @@ class Fb_ignited {
 			function sendrequest() {
 				FB.ui({
 					method: 'apprequests',
-					access_token: '{$this->CI->facebook->getAccessToken()}',
+					access_token: '{$this->facebook->getAccessToken()}',
 					display: '{$display}',
 					message: '{$message}'
 				}, requestCallback);
@@ -452,7 +453,7 @@ class Fb_ignited {
 			FB.init({appId: '{$this->globals['fb_appid']}', xfbml: true, cookie: true});
 			FB.ui({
 				method: 'send',
-				access_token: '{$this->CI->facebook->getAccessToken()}',
+				access_token: '{$this->facebook->getAccessToken()}',
 				display: '{$display}',
 				link: '{$link}',
 				picture: '{$picture}',

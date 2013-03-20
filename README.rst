@@ -1,5 +1,5 @@
 =====================================
-Facebook Ignited v1.3.0 Documentation
+Facebook Ignited v1.3.1 Documentation
 =====================================
 Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
@@ -14,6 +14,10 @@ As of this this version I am using CI v2.1.3 & FB SDK v3.2.2.
 If you are looking for a full install you can download it from the ``full-install`` branch at:
 
 	https://github.com/Necromnius/Facebook-Ignited/tree/full-install
+
+Now a barebones version of Facebook Ignited is available in the ``not-ignited`` branch at:
+
+	https://github.com/Necromnius/Facebook-Ignited/tree/not-ignited
 
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
