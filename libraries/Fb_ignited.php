@@ -28,8 +28,7 @@ class Fb_ignited {
 		parse_str($_SERVER['QUERY_STRING'], $fb_query_strings);
 		if (isset($fb_query_strings['state'])) $_REQUEST['state'] = $fb_query_strings['state'];
 		if (isset($fb_query_strings['code']))  $_REQUEST['code']  = $fb_query_strings['code'];
-        $this->CI       = & get_instance();
-		$fb_params      = $this->fb_set_globals($params);
+        $fb_params      = $this->fb_set_globals($params);
 		$this->facebook = new Facebook($fb_params);
 		$this->userid   = $this->facebook->getUser();
 	}
@@ -40,10 +39,9 @@ class Fb_ignited {
 		 * class is not present it will then look into the Facebook SDK, check if it exists.
 		 * If it does not then it returns a false which the user can use to determine what to do.
 		 */
-		$this->CI->load->helper('params');
 		if (method_exists($this->facebook, $method)) {
 			try {
-				$value = wrap_call_user_func_array($this->facebook, $method, $params);
+				$value = $this->wrap_call_user_func_array($this->facebook, $method, $params);
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("Error trying {$method}(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
@@ -73,10 +71,11 @@ class Fb_ignited {
 		$request_ids = explode(',', $request_ids);
 		$result_value = false;
 		if ($callback) {
-			extract($callback, EXTR_OVERWRITE);
-			if ($this->CI->load->model($file)) {
-				$this->CI->$file->$method($request_ids);
-			}
+            extract($callback, EXTR_OVERWRITE);
+            /**
+             * TODO: Need to work on this so that I can convert it over correctly
+             * */
+            $this->xtra_database_insert($request_ids);
 		}
 		foreach ($request_ids as $value) {
 			$request_data = $this->facebook->api("/{$value}");
@@ -210,7 +209,6 @@ class Fb_ignited {
 		 * @param $script - if set to true will echo out a JavaScript redirect. If set to false will redirect.
 		 * @param $redirect - if set to true will cause the user to be redirected to
 		 */
-		$this->CI->load->helper('url');
 		if ($this->userid) {
 			try {
 				$me = $this->facebook->api('/me');
@@ -225,7 +223,7 @@ class Fb_ignited {
 				if ($script == true){
 					echo $loc;
 				} else {
-					redirect($loc);
+                    $this->xtra_redirect($loc);
 				}
 				exit;
 			} else {
@@ -375,7 +373,7 @@ class Fb_ignited {
 		}
 		$me = $this->fb_get_me();
 		$payload = $request['credits'];
-		$func = $this->CI->input->get_post('method');
+		$func = $_REQUEST['method'];
 		$order_id = $payload['order_id'];
 		if ($func == 'payments_status_update') {
 			$status = $payload['status'];
@@ -384,30 +382,21 @@ class Fb_ignited {
 				$next_state = 'settled';
 				$data['content']['status'] = $next_state;
 				// If given the go ahead, we finalize the transaction so that the user can grab the item
-				$this->CI->db->where('order_id', $order_id);
-				$this->CI->db->update('fb_item_cache', array('finalized' => '1'));
+                mysql_query("UPDATE `fb_item_cache` SET `finalized` = '1' WHERE `order_id` = '" . $order_id . "'");
 			}
 			// compose returning data array_change_key_case
 			$data['content']['order_id'] = $order_id;
-		} else if ($func == 'payments_get_items') {
+		} elseif ($func == 'payments_get_items') {
 			// remove escape characters
 			$order_info = stripcslashes($payload['order_info']);
 			$item_info = json_decode($order_info, true);
 			if ($item_info != "") {
-				// If the item id is not null we look up the info from the database
-				$this->CI->db->select('title, price, description, image_url, product_url')->from('fb_item_store')->where(array('item_id' => $item_info));
-				$query = $this->CI->db->get();
-				// Add it to the item array so that the system can pull it
-				$item = $query->row_array();
-				// Then we add a transaction to the item cache.
-				$data = array(
-					'userid' => $me['id'],
-					'item_id' => $item_info,
-					'order_id' => $order_id,
-					'finalized' => 0,
-					'time' => time()
-				);
-				$this->CI->db->insert('fb_item_cache', $data);
+                // If the item id is not null we look up the info from the database
+                $query = mysql_query("SELECT `title`, `price`, `description`, `image_url`, `product_url` FROM `fb_item_store` WHERE `item_id` = '" . $item_info . "'");
+                // Add it to the item array so that the system can pull it
+                $item = mysql_fetch_array($query);
+                // Then we add a transaction to the item cache.
+                mysql_query("INSERT INTO `fb_item_cache` (`userid`, `item_id`, `order_id`, `finalized`, `time`) VALUES('" . $me['id'] . "', '" . $item_info . "', '" . $order_id . "', '0', '" . time() . "')");
 			}
 			//for url fields, if not prefixed by http:,
 			//prefix them
@@ -494,4 +483,57 @@ class Fb_ignited {
 
 		return $param_array;
 	}
+
+    protected function wrap_call_user_func_array($c, $a, $p) {
+        switch (count($p)) {
+        case 0: return $c->{$a}();
+            break;
+        case 1: return $c->{$a}($p[0]);
+            break;
+        case 2: return $c->{$a}($p[0], $p[1]);
+            break;
+        case 3: return $c->{$a}($p[0], $p[1], $p[2]);
+            break;
+        case 4: return $c->{$a}($p[0], $p[1], $p[2], $p[3]);
+            break;
+        case 5: return $c->{$a}($p[0], $p[1], $p[2], $p[3], $p[4]);
+            break;
+        default: return call_user_func_array(array($c, $a), $p);
+        break;
+        }
+    }
+
+    function xtra_database_insert($request_ids) {
+        // This is an example function that will be called when you accept requests.
+        // NOTE: You must have a database set to use this function!
+        foreach ($request_ids as $value) {
+            // Loops through each id and adds them into database if they don't already exists.
+            $request_data = $this->facebook->api('/' . $value);
+            $user_id = $this->facebook->getUser();
+            $other_id = $request_data['from']['id'];
+            if ($request_data['from']) {
+                $query = mysql_query("SELECT * FROM `user_friends` WHERE `id` = '" . $user_id . "', `friend` = '" . $other_id . "'");
+                if (mysql_num_rows($query) == 0) {
+                    mysql_query("INSERT INTO `user_friends' (`id`, `friend`) VALUES ('" . $user_id . "', '" . $other_id . "')");
+                }
+                $query = mysql_query("SELECT * FROM `user_friends` WHERE `id` = '" . $other_id . "', `friend` = '" . $user_id . "'");
+                if (mysql_num_rows($query) == 0) {
+                    mysql_query("INSERT INTO `user_friends' (`id`, `friend`) VALUES ('" . $other_id . "', '" . $user_id . "')");
+                }
+            }
+        }
+    }
+
+    function xtra_redirect($uri = '', $method = 'location', $http_response_code = 302) {
+        if (!preg_match('#^https?://#i', $uri)) {
+            $uri = site_url($uri);
+        }
+        switch ($method) {
+        case 'refresh' : header("Refresh:0;url=" . $uri);
+            break;
+        default : header("Location: " . $uri, TRUE, $http_response_code);
+        break;
+        }
+        exit;
+    }
 }
