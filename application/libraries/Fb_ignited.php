@@ -211,11 +211,12 @@ class Fb_ignited {
 		 * @param $redirect - if set to true will cause the user to be redirected to
 		 */
 		$this->CI->load->helper('url');
-		if ($this->userid) {
+		if ($this->userid != null) {
 			try {
 				$me = $this->facebook->api('/me');
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_get_me(): ".$e->getMessage(), $e, $this->globals['fb_logexcept']);
+                $this->userid = null;
 				return false;
 			}
 			return $me;
@@ -429,7 +430,7 @@ class Fb_ignited {
 		 * This function will generate a request dialog
 		 */
 		$send = "<script>
-			FB.init({appId: '{$this->globals['fb_appid']}', frictionlessRequests: true,});
+			FB.init({appId: '{$this->globals['fb_appid']}', frictionlessRequests: true});
 			function sendrequest() {
 				FB.ui({
 					method: 'apprequests',
