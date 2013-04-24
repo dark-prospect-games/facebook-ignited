@@ -130,3 +130,8 @@ Also ensure that you have the database info for that database added into the ``/
 you auto-load the database class. This will allow the Facebook processing function to automatically add the items to 
 the `fb_item_cache` table so that users can grab them. You will need to make sure that you remove them from the 
 `fb_item_cache` table so that they do not get duplicates.
+
+
+.. image:: https://cruel-carlota.pagodabox.com/8f3080920de277e7a37fbd10fc50b748
+    :alt: githalytics.com
+    :target: http://githalytics.com/Necromnius/Facebook-Ignited
