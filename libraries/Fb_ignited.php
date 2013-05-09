@@ -150,10 +150,10 @@ class Fb_ignited {
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
-			if (is_numeric($feed_id)) {
+			if (preg_match("/^[0-9_]+$/", $feed_id)) {
 				return $feed_id;
 			} else {
-				throw new FBIgnitedException("fb_feed() - Facebook::api() returned a non-numeric value.", null, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_feed() - Facebook::api() returned an invalid value.", null, $this->globals['fb_logexcept']);
 			}
 		} elseif ($method == "delete") {
 			try {
@@ -179,7 +179,7 @@ class Fb_ignited {
 			throw new FBIgnitedException("fb_fql() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 		}
 
-		return json_decode($fql_obj);
+		return $fql_obj;
 	}
 
 	public function fb_get_app($variable = "") {
@@ -206,11 +206,12 @@ class Fb_ignited {
 		 * @param $script - if set to true will echo out a JavaScript redirect. If set to false will redirect.
 		 * @param $redirect - if set to true will cause the user to be redirected to
 		 */
-		if ($this->userid) {
+		if ($this->userid !== null) {
 			try {
 				$me = $this->facebook->api('/me');
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_get_me(): ".$e->getMessage(), $e, $this->globals['fb_logexcept']);
+                $this->userid = null;
 				return false;
 			}
 			return $me;
@@ -415,7 +416,7 @@ class Fb_ignited {
 		 * This function will generate a request dialog
 		 */
 		$send = "<script>
-			FB.init({appId: '{$this->globals['fb_appid']}', frictionlessRequests: true,});
+			FB.init({appId: '{$this->globals['fb_appid']}', frictionlessRequests: true});
 			function sendrequest() {
 				FB.ui({
 					method: 'apprequests',

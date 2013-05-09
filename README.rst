@@ -5,7 +5,7 @@ Both of the projects merged into this project are open source projects.
 I make no claim to their origin just the work put into expanding on them 
 and making their functionality more accessable.
 
-You can view CodeIgniter at http://codeigniter.com and Facebook PHP SDK at 
+You can view CodeIgniter at http://ellislab.com/codeigniter and Facebook PHP SDK at
 https://github.com/facebook/facebook-php-sdk/ if you have any bugs regarding them please 
 check their coresponding sites. 
 
@@ -13,15 +13,16 @@ As of this this version I am using CI v2.1.3 & FB SDK v3.2.2.
 
 If you are looking for a full install you can download it from the ``full-install`` branch at:
 
-	https://github.com/Necromnius/Facebook-Ignited/tree/full-install
+	https://github.com/DarkProspectGames/Facebook-Ignited/tree/full-install
 
 Now a barebones version of Facebook Ignited is available in the ``not-ignited`` branch at:
 
-	https://github.com/Necromnius/Facebook-Ignited/tree/not-ignited
+	https://github.com/DarkProspectGames/Facebook-Ignited/tree/not-ignited
 
 Thanks! And I hope you enjoy this preconfigured version of Facebook Ignited!
 
--Necromnius aka Rev. Alfonso E Martinez, III
+Alfonso E Martinez III
+Owner of Dark Prospect Games, LLC
 
 
 Instructions for Installation
@@ -54,7 +55,7 @@ After that you can load the example page and start to learn from there!
 
 Once you have the system loaded for first time, please go and read: 
 
-https://github.com/Necromnius/Facebook-Ignited/wiki/Methods 
+https://github.com/DarkProspectGames/Facebook-Ignited/wiki/Methods
 
 It will explain what the features do. Please note that I will only provide limited support to 
 people who have edited their ``application/libraries/Fb_ignited.php`` file without a pull request. As stated at 
@@ -130,3 +131,8 @@ Also ensure that you have the database info for that database added into the ``/
 you auto-load the database class. This will allow the Facebook processing function to automatically add the items to 
 the `fb_item_cache` table so that users can grab them. You will need to make sure that you remove them from the 
 `fb_item_cache` table so that they do not get duplicates.
+
+
+.. image:: https://cruel-carlota.pagodabox.com/7f2a2b9a9fca4c6bf896b696a87506ca
+    :alt: githalytics.com
+    :target: http://githalytics.com/DarkProspectGames/Facebook-Ignited

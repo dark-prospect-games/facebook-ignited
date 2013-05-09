@@ -5,6 +5,9 @@
 ============ v1.3.1 ============
 # Making Facebook PHP SDK directly accessible by the Facebook Ignited class, will help performance slightly.
 # Moved the Facebook Enhanced project into Facebook Ignited as a branch called 'not-ignited'.
+# Moved the Facebook Ignited project to DarkProspectGames group/team and updated the links in the README.
+# Resolved issue #15 by removing json_decode() from fb_list_friends().
+# Resolved issue #16 by changing the check for feed id from numeric to a pattern check of numeric plus underscore.
 ============ v1.3.0 ============
 # Updated the Facebook PHP SDK to v3.2.2
 # Added a new FBIgnitedException class to handle the exceptions thrown from FacebookApiException class.
