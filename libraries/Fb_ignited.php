@@ -154,10 +154,10 @@ class Fb_ignited {
 			} catch (FacebookApiException $e) {
 				throw new FBIgnitedException("fb_feed() - Facebook::api() exception caught: " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
 			}
-			if (is_numeric($feed_id)) {
+			if (preg_match("/^[0-9_]+$/", $feed_id)) {
 				return $feed_id;
 			} else {
-				throw new FBIgnitedException("fb_feed() - Facebook::api() returned a non-numeric value.", null, $this->globals['fb_logexcept']);
+				throw new FBIgnitedException("fb_feed() - Facebook::api() returned an invalid value.", null, $this->globals['fb_logexcept']);
 			}
 		} elseif ($method == "delete") {
 			try {
