@@ -2,6 +2,8 @@
 ========== Change Log ==========
 ================================
 
+============ v1.3.2 ============
+# Rewrote the commenting of Facebook Ignited to match
 ============ v1.3.1 ============
 # Making Facebook PHP SDK directly accessible by the Facebook Ignited class, will help performance slightly.
 # Moved the Facebook Enhanced project into Facebook Ignited as a branch called 'not-ignited'.
