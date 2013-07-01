@@ -11,9 +11,6 @@
  * @license   BSD https://darkprospect.net/BSD-License.txt
  * @link      https://github.com/DarkProspectGames/Facebook-Ignited
  */
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
 
 require_once 'Facebook.php';
 require_once 'FBIgnitedException.php';
