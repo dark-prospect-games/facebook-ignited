@@ -6,6 +6,7 @@
 * Coding Standards for Facebook Ignited now require 4 spaces and absolutely no tabs.
 * Added the .idea folder for users to use with IntelliJ Idea products by JetBrains like PhpStorm.
 * JetBrains has offered licensing to all contributers of the Facebook Ignited project.
+* Added a new configuration option 'fb_pageid' for the devs to add the id of the Facebook Fanpage of their applications.
 
 #### v1.3.1
 * Making Facebook PHP SDK directly accessible by the Facebook Ignited class, will help performance slightly.
