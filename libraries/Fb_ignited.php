@@ -379,7 +379,7 @@ class Fb_ignited
     public function fb_is_liked()
     {
         try {
-            $request = $this->facebook->api("/{$this->userid}/likes/APP_ID");
+            $request = $this->facebook->api("/{$this->userid}/likes/{$this->globals['fb_pageid']}");
         } catch (FacebookApiException $e) {
             throw new FBIgnitedException('fb_is_liked() - exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
         }
