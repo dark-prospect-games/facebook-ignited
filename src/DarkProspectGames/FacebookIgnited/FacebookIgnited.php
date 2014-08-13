@@ -11,12 +11,10 @@
  * @license   BSD https://darkprospect.net/BSD-License.txt
  * @link      https://github.com/DarkProspectGames/Facebook-Ignited
  */
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+namespace DarkProspectGames\FacebookIgnited;
 
-require_once 'Facebook.php';
-require_once 'FBIgnitedException.php';
+use \Facebook;
+use \FacebookApiException;
 
 /**
  * Facebook Ignited by Dark Prospect Games
@@ -35,14 +33,8 @@ require_once 'FBIgnitedException.php';
  * @version  Release: 1.3.2
  * @link     https://github.com/DarkProspectGames/ObsidianMoonEngine
  */
-class Fb_ignited
+class FacebookIgnited
 {
-
-    /**
-     * @var mixed This holds the instance of the Facebook PHP SDK.
-     */
-    private $CI;
-
     /**
      * @var Facebook This holds the instance of the Facebook PHP SDK.
      */
@@ -78,8 +70,7 @@ class Fb_ignited
             $_REQUEST['code'] = $fb_query_strings['code'];
         }
 
-        $this->CI       =& get_instance();
-        $fb_params      = $this->fb_set_globals($params);
+        $fb_params      = $this->setGlobals($params);
         $this->facebook = new Facebook($fb_params);
         $this->userid   = $this->facebook->getUser();
     }
@@ -95,19 +86,27 @@ class Fb_ignited
      * @param array  $params parameters being passed to the method
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
     public function __call($method, $params)
     {
-        $this->CI->load->helper('params');
         if (method_exists($this->facebook, $method)) {
             try {
-                $value = wrap_call_user_func_array($this->facebook, $method, $params);
+                $value = $this->wrapCallUserFunction($this->facebook, $method, $params);
             } catch (FacebookApiException $e) {
-                throw new FBIgnitedException("Error trying {$method}(): " . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+                throw new FacebookIgnitedException(
+                    "Error trying {$method}(): " . $e->getMessage(),
+                    $e,
+                    $this->globals['fb_logexcept']
+                );
             }
         } else {
-            throw new FBIgnitedException("Could not find the method {$method} in Facebook Class.", null, null, $this->globals['fb_logexcept']);
+            throw new FacebookIgnitedException(
+                "Could not find the method {$method} in Facebook Class.",
+                null,
+                null,
+                $this->globals['fb_logexcept']
+            );
         }
 
         return $value;
@@ -120,23 +119,15 @@ class Fb_ignited
      * $request_ids to it. Make sure you accept and do with it as you will. Your system must have CURL
      * enabled to utilize this specific method.
      *
-     * @param mixed      $request_ids The ids of the requests we will be processing.
-     * @param bool|array $callback    The callback model and method to be used.
+     * @param mixed $request_ids The ids of the requests we will be processing.
      *
      * @return bool|string
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_accept_requests($request_ids, $callback = false)
+    public function acceptRequests($request_ids)
     {
         $request_ids  = explode(',', $request_ids);
         $result_value = false;
-        if (is_array($callback)) {
-            $file   = $callback['file'];
-            $method = $callback['method'];
-            if ($this->CI->load->model($file)) {
-                $this->CI->$file->$method($request_ids);
-            }
-        }
 
         foreach ($request_ids as $value) {
             $request_data = $this->facebook->api("/{$value}");
@@ -145,7 +136,7 @@ class Fb_ignited
                 try {
                     $result = $this->facebook->api($full_request_id, 'DELETE');
                 } catch (FacebookApiException $e) {
-                    throw new FBIgnitedException($e->getMessage(), $e, $this->globals['fb_logexcept']);
+                    throw new FacebookIgnitedException($e->getMessage(), $e, $this->globals['fb_logexcept']);
                 }
                 if ($result) {
                     if (strlen($result_value) > 0) {
@@ -169,14 +160,14 @@ class Fb_ignited
      * @param null   $extend tells the method whether or not to extend the users permissions
      *
      * @return bool|string
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_check_permissions($perm, $extend = null)
+    public function checkPermissions($perm, $extend = null)
     {
         try {
-            $data = $this->fb_fql("SELECT {$perm} FROM permissions WHERE uid = me()");
-        } catch (FBIgnitedException $e) {
-            throw new FBIgnitedException('fb_fql() : ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            $data = $this->fql("SELECT {$perm} FROM permissions WHERE uid = me()");
+        } catch (FacebookIgnitedException $e) {
+            throw new FacebookIgnitedException('fb_fql() : ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
         }
         $permission = implode(',', array_keys(array_diff($data[0], array(1))));
         if (!$permission) {
@@ -186,7 +177,7 @@ class Fb_ignited
                 return false;
             } else {
                 $extend['scope'] = 'perm';
-                $url             = $this->fb_login_url($extend);
+                $url             = $this->loginUrl($extend);
                 if ($extend['script'] == true) {
                     echo $url;
                     exit;
@@ -206,9 +197,9 @@ class Fb_ignited
      * @param mixed $callback       An optional callback that will used to handle the results.
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_create_event($fb_event_array, $callback = null)
+    public function createEvent($fb_event_array, $callback = null)
     {
         $fb_event_utf8 = array_map('utf8_encode', $fb_event_array);
         $param         = array(
@@ -219,7 +210,11 @@ class Fb_ignited
         try {
             $eventID = $this->facebook->api($param);
         } catch (FacebookApiException $e) {
-            throw new FBIgnitedException('fb_create_event() - Facebook::api() exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            throw new FacebookIgnitedException(
+                'fb_create_event() - Facebook::api() exception caught: ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
 
         return $eventID;
@@ -236,25 +231,37 @@ class Fb_ignited
      * @param mixed  $values Values of the details to be used.
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_feed($method, $id = null, $values = null)
+    public function feed($method, $id = null, $values = null)
     {
         $response = null;
         if ($method == 'post') {
             try {
                 $response = $this->facebook->api("/$id/feed", 'post', $values);
             } catch (FacebookApiException $e) {
-                throw new FBIgnitedException('fb_feed() - Facebook::api() exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+                throw new FacebookIgnitedException(
+                    'fb_feed() - Facebook::api() exception caught: ' . $e->getMessage(),
+                    $e,
+                    $this->globals['fb_logexcept']
+                );
             }
             if (!preg_match('/^[0-9_]+$/', $response)) {
-                throw new FBIgnitedException('fb_feed() - Facebook::api() returned an invalid value.', null, $this->globals['fb_logexcept']);
+                throw new FacebookIgnitedException(
+                    'fb_feed() - Facebook::api() returned an invalid value.',
+                    null,
+                    $this->globals['fb_logexcept']
+                );
             }
-        } else if ($method == 'delete') {
+        } elseif ($method == 'delete') {
             try {
-                $response = $this->facebok->api("/$id", 'delete');
-            } catch (FBIgnitedException $e) {
-                throw new FBIgnitedException('fb_feed() - Facebook::api() exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+                $response = $this->facebook->api("/$id", 'delete');
+            } catch (FacebookIgnitedException $e) {
+                throw new FacebookIgnitedException(
+                    'fb_feed() - Facebook::api() exception caught: ' . $e->getMessage(),
+                    $e,
+                    $this->globals['fb_logexcept']
+                );
             }
         }
 
@@ -269,9 +276,9 @@ class Fb_ignited
      * @param mixed $fqlquery Query to be sent to Facebook.
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_fql($fqlquery)
+    public function fql($fqlquery)
     {
         if (is_array($fqlquery)) {
             $fqlquery = json_encode($fqlquery);
@@ -280,7 +287,11 @@ class Fb_ignited
         try {
             $fql_obj = $this->facebook->api(array('method' => 'fql.query', 'query' => $fqlquery));
         } catch (FacebookApiException $e) {
-            throw new FBIgnitedException('fb_fql() - Facebook::api() exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            throw new FacebookIgnitedException(
+                'fb_fql() - Facebook::api() exception caught: ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
 
         return $fql_obj;
@@ -295,7 +306,7 @@ class Fb_ignited
      *
      * @return array|bool
      */
-    public function fb_get_app($variable = '')
+    public function getAppDetails($variable = '')
     {
         if ($variable != '') {
             if (isset($this->globals[$variable])) {
@@ -319,27 +330,30 @@ class Fb_ignited
      * @param mixed $script   determines if a header or javascript redirect occurs
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_get_me($redirect = false, $script = true)
+    public function getMe($redirect = false, $script = true)
     {
-        $this->CI->load->helper('url');
         if ($this->userid != null) {
             try {
                 $me = $this->facebook->api('/me');
             } catch (FacebookApiException $e) {
                 $this->userid = null;
-                throw new FBIgnitedException('fb_get_me(): ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+                throw new FacebookIgnitedException(
+                    'fb_get_me(): ' . $e->getMessage(),
+                    $e,
+                    $this->globals['fb_logexcept']
+                );
             }
 
             return $me;
         } else {
             if ($redirect == true) {
-                $loc = $this->fb_login_url(array('script' => $script));
+                $loc = $this->loginUrl(array('script' => $script));
                 if ($script == true) {
                     echo $loc;
                 } else {
-                    redirect($loc);
+                    $this->xtraRedirect($loc);
                 }
 
                 exit;
@@ -355,14 +369,18 @@ class Fb_ignited
      * This method will check to see if the users have bookmarked the application
      *
      * @return boolean
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_is_bookmarked()
+    public function isBookmarked()
     {
         try {
-            $datas = $this->fb_fql('SELECT bookmarked FROM permissions WHERE uid = me()');
-        } catch (FBIgnitedException $e) {
-            throw new FBIgnitedException('fb_is_bookmarked(): ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            $datas = $this->fql('SELECT bookmarked FROM permissions WHERE uid = me()');
+        } catch (FacebookIgnitedException $e) {
+            throw new FacebookIgnitedException(
+                'fb_is_bookmarked(): ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
         if ($datas) {
             return true;
@@ -377,14 +395,18 @@ class Fb_ignited
      * This method will check to see if the users have liked the application
      *
      * @return boolean
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_is_liked()
+    public function isLiked()
     {
         try {
             $request = $this->facebook->api("/{$this->userid}/likes/{$this->globals['fb_pageid']}");
         } catch (FacebookApiException $e) {
-            throw new FBIgnitedException('fb_is_liked() - exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            throw new FacebookIgnitedException(
+                'fb_is_liked() - exception caught: ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
         if ($request['data'] || $request->data) {
             return true;
@@ -403,20 +425,26 @@ class Fb_ignited
      * @param string $list  dermines full friends list or app friends only
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_list_friends($value = 'uid', $list = '')
+    public function listFriends($value = 'uid', $list = '')
     {
         if ($list == 'full') {
-            $fquery = "SELECT {$value} FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())";
+            $fquery = "SELECT {$value} FROM user WHERE uid IN
+(SELECT uid2 FROM friend WHERE uid1 = me())";
         } else {
-            $fquery = "SELECT {$value} FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 'true'";
+            $fquery = "SELECT {$value} FROM user WHERE uid IN
+(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 'true'";
         }
 
         try {
-            $friends = $this->fb_fql($fquery);
-        } catch (FBIgnitedException $e) {
-            throw new FBIgnitedException('fb_list_friends(): ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            $friends = $this->fql($fquery);
+        } catch (FacebookIgnitedException $e) {
+            throw new FacebookIgnitedException(
+                'fb_list_friends(): ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
 
         return $friends;
@@ -431,9 +459,9 @@ class Fb_ignited
      * @param array $params configures how the login url will be handled
      *
      * @return string
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_login_url($params = null)
+    public function loginUrl($params = null)
     {
         if (!isset($params['scope'])) {
             $params['scope'] = $this->globals['fb_auth'];
@@ -450,7 +478,7 @@ class Fb_ignited
             )
         );
         if (isset($params['script']) && $params['script'] == true) {
-            $url = "<script>top.location.href='" . $url . "'</script>";
+            $url = "<script>top.location.href='$url'</script>";
         }
 
         return $url;
@@ -468,9 +496,9 @@ class Fb_ignited
      * @param boolean $script determines if we use a script or not
      *
      * @return string
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_logout_url($next = '', $script = false)
+    public function logoutUrl($next = '', $script = false)
     {
         if (substr($this->globals['fb_canvas'], -1) == '/') {
             $redirect = $this->globals['fb_canvas'] . $next;
@@ -480,7 +508,7 @@ class Fb_ignited
 
         $url = $this->facebook->getLogoutUrl(array('next' => $redirect));
         if ($script == true) {
-            $url = "<script>top.location.href='" . $url . "'</script>";
+            $url = "<script>top.location.href='$url'</script>";
         }
 
         return $url;
@@ -495,9 +523,9 @@ class Fb_ignited
      * @param boolean $user_id the user id that we are pushing the notification to
      *
      * @return mixed
-     * @throws FBIgnitedException
+     * @throws FacebookIgnitedException
      */
-    public function fb_notification($message, $user_id = null)
+    public function notification($message, $user_id = null)
     {
         if ($user_id === null) {
             $user_id = $this->userid;
@@ -511,7 +539,11 @@ class Fb_ignited
         try {
             $send_result = $this->facebook->api("/$user_id/notifications", 'post', $data);
         } catch (FacebookApiException $e) {
-            throw new FBIgnitedException('fb_notification() - exception caught: ' . $e->getMessage(), $e, $this->globals['fb_logexcept']);
+            throw new FacebookIgnitedException(
+                'fb_notification() - exception caught: ' . $e->getMessage(),
+                $e,
+                $this->globals['fb_logexcept']
+            );
         }
 
         return $send_result;
@@ -522,75 +554,9 @@ class Fb_ignited
      *
      * @return void
      */
-    public function fb_post_activity()
+    public function postActivity()
     {
 
-    }
-
-    /**
-     * Processes Facebook Credit
-     *
-     * This method will conduct the processing of Facebook Credits
-     *
-     * @return string
-     * @throws FBIgnitedException
-     */
-    public function fb_process_credits()
-    {
-        $data    = array('content' => array());
-        $request = $this->facebook->getSignedRequest();
-        if ($request == null) {
-            throw new FBIgnitedException('Bad signed request in fb_process_credits()', null, $this->globals['fb_logexcept']);
-        }
-
-        $me       = $this->fb_get_me();
-        $payload  = $request['credits'];
-        $func     = $this->CI->input->get_post('method');
-        $order_id = $payload['order_id'];
-        if ($func == 'payments_status_update') {
-            $status = $payload['status'];
-            if ($status == 'placed') {
-                $next_state                = 'settled';
-                $data['content']['status'] = $next_state;
-                $this->CI->db->where('order_id', $order_id);
-                $this->CI->db->update('fb_item_cache', array('finalized' => '1'));
-            }
-
-            $data['content']['order_id'] = $order_id;
-        } else if ($func == 'payments_get_items') {
-            $order_info = stripcslashes($payload['order_info']);
-            $item_info  = json_decode($order_info, true);
-            $item       = null;
-            if ($item_info != '') {
-                $this->CI->db->select('title, price, description, image_url, product_url')->from('fb_item_store')->where(array('item_id' => $item_info));
-                $query = $this->CI->db->get();
-                $item  = $query->row_array();
-                $data  = array(
-                          'userid'    => $me['id'],
-                          'item_id'   => $item_info,
-                          'order_id'  => $order_id,
-                          'finalized' => 0,
-                          'time'      => time(),
-                         );
-                $this->CI->db->insert('fb_item_cache', $data);
-            }
-
-            $url_key = array(
-                        'product_url',
-                        'image_url',
-                       );
-            foreach ($url_key as $key) {
-                if (substr($item[$key], 0, 7) != 'http://') {
-                    $item[$key] = 'http://' . $item[$key];
-                }
-            }
-
-            $data['content'] = array($item);
-        }//end if
-
-        $data['method'] = $func;
-
-        return json_encode($data);
     }
 
     /**
@@ -603,7 +569,7 @@ class Fb_ignited
      *
      * @return mixed
      */
-    private function fb_set_globals($params)
+    public function setGlobals($params)
     {
         $param_array = array();
         if (is_numeric($params['fb_appid'])) {
@@ -626,7 +592,7 @@ class Fb_ignited
         $this->globals['fb_apptype'] = $params['fb_apptype'];
         if ($this->globals['fb_apptype'] == 'iframe') {
             $this->globals['fb_canvas'] = "{$this->globals['protocol']}://apps.facebook.com/{$params['fb_canvas']}/";
-        } else if ($this->globals['fb_apptype'] == 'connect') {
+        } elseif ($this->globals['fb_apptype'] == 'connect') {
             if (preg_match('/^http:\/\//', $params['fb_canvas']) || preg_match('/^https:\/\//', $params['fb_canvas'])) {
                 $this->globals['fb_canvas'] = $params['fb_canvas'];
             } else {
@@ -643,4 +609,51 @@ class Fb_ignited
         return $param_array;
     }
 
+    /**
+     * Handle the way that we push to call_user_func_array()
+     *
+     * @param mixed $c Class we are using.
+     * @param mixed $a Method that will be used.
+     * @param mixed $p Parameters being pushed.
+     *
+     * @return mixed
+     */
+    protected function wrapCallUserFunction($c, $a, $p)
+    {
+        if (count($p) == 0) {
+            $functional = $c->{$a}();
+        } elseif (count($p) == 1) {
+            $functional = $c->{$a}($p[0]);
+        } elseif (count($p) == 2) {
+            $functional = $c->{$a}($p[0], $p[1]);
+        } elseif (count($p) == 3) {
+            $functional = $c->{$a}($p[0], $p[1], $p[2]);
+        } elseif (count($p) == 4) {
+            $functional = $c->{$a}($p[0], $p[1], $p[2], $p[3]);
+        } elseif (count($p) == 5) {
+            $functional = $c->{$a}($p[0], $p[1], $p[2], $p[3], $p[4]);
+        } else {
+            $functional = call_user_func_array(array($c, $a), $p);
+        }
+
+        return $functional;
+    }
+
+    /**
+     * Use headers to redirect
+     *
+     * @param string $uri                The location we are going to redirect to.
+     * @param string $method             Method of the redirect.
+     * @param int    $http_response_code HTTP Response Code we will send with the headers.
+     *
+     * @return void
+     */
+    protected function xtraRedirect($uri = '', $method = 'location', $http_response_code = 302)
+    {
+        if ($method == 'refresh') {
+            header("Refresh:0;url=$uri");
+        } else {
+            header("Location: $uri", true, $http_response_code);
+        }
+    }
 }

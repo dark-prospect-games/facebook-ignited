@@ -34,24 +34,13 @@ Owner of Dark Prospect Games, LLC
 
 #### Instructions for Installation
 
-You will need a few things for this to work correctly:
-
-1. This code
-2. Hosting with PHP support
-3. A facebook application
-
-You can register your app at https://developers.facebook.com/apps
-
-Once you have all those steps done, and you have set up your hosting and added that to your
-app in the developers panel of Facebook. You will need to edit a few files in this code.
-
-The following page you will need to change the variables to that found in your Dev Panel.
-
-``application/config/fb_ignited.php``
-
-or
-
-``sparks/fb_ignited/config/fb_ignited.php``
+```
+{
+  "require": {
+    "dark-prospect-games/facebook-ignited": "dev-master"
+  }
+}
+```
 
 One of the configurations you will need to pay close attention  to: ``$config['fb_apptype']`` If you set it to ``iframe`` only
 use the info you put in the dev panel of your app. Eg. ``facebook-ignited`` in ``http://apps.facebook.com/facebook-ignited/``,
@@ -107,34 +96,3 @@ Facebook Ignited is a shell for Facebook PHP SDK, so any and all Facebook functi
 ``$this->fb_ignited->facebook->api('/me')``) if it is not present in Facebook Ignited and is a native Facebook PHP SDK method.
 This reduces the need for calling more than one class in your code.
 
-#### Accepting Facebook Credits
-
-As a added bonus the system now supports Facebook Credits, if you want use the system as it is create a database and
-use this database query:
-
-```sql
-CREATE TABLE `fb_item_store` (
-`item_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`title` VARCHAR( 50 ) NOT NULL ,
-`price` INT NOT NULL ,
-`description` VARCHAR( 100 ) NOT NULL ,
-`image_url` VARCHAR( 100 ) NOT NULL ,
-`product_url` VARCHAR( 100 ) NOT NULL
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
-CREATE TABLE `fb_item_cache` (
-`userid` BIGINT NOT NULL ,
-`item_id` INT NOT NULL ,
-`order_id` BIGINT NOT NULL ,
-`finalized` INT NOT NULL,
-`time` BIGINT NOT NULL,
-KEY `userid` ( `userid` )
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
-```
-
-Also ensure that you have the database info for that database added into the ``/config/database.php`` file and that
-you auto-load the database class. This will allow the Facebook processing function to automatically add the items to
-the `fb_item_cache` table so that users can grab them. You will need to make sure that you remove them from the
-`fb_item_cache` table so that they do not get duplicates.
-
-
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/7f2a2b9a9fca4c6bf896b696a87506ca "githalytics.com")](http://githalytics.com/DarkProspectGames/Facebook-Ignited)
