@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "name": "dark-prospect-games/facebook-ignited",
     "description": "A Facebook Library",
     "version": "1.3.0",
@@ -28,44 +27,10 @@
         "psr-4": {
             "DarkProspectGames\\FacebookIgnited\\": "src/"
         }
-=======
-    "name": "darkprospect/obsidian-moon-engine",
-    "description": "An Open Source, Lightweight and 100% Modular Framework in PHP",
-    "version": "1.3.0",
-    "keywords": [
-        "framework"
-    ],
-    "homepage": "https://darkprospect.net",
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Alfonso E Martinez, III",
-            "email": "admin@darkprospect.net",
-            "homepage": "https://darkprospect.net",
-            "role": "Lead Developer"
-        }
-    ],
-    "support":
-    {
-        "email": "admin@darkprospect.net",
-        "forum": "https://darkprospect.net/forums/",
-        "issues": "https://github.com/DarkProspectGames/obsidian-moon-engine/issues",
-        "source": "https://github.com/DarkProspectGames/obsidian-moon-engine/tree/master"
-    },
-    "require": {
-        "php": ">=5.3.0",
-        "facebook/php-sdk": "3.*"
-    },
-    "autoload": {
-        "classmap": [
-            "Libraries"
-        ]
->>>>>>> bb4548e616d4bf372a03e3d730c0ac3b4bb82ac3
     },
     "config": {
         "preferred-install": "dist"
     },
-<<<<<<< HEAD
     "minimum-stability": "stable",
     "support": {
         "email": "admin@darkprospect.net",
@@ -74,7 +39,3 @@
         "source": "https://gitlab.com/dark-prospect-games/facebook-ignited/"
     }
 }
-=======
-    "minimum-stability": "dev"
-}
->>>>>>> bb4548e616d4bf372a03e3d730c0ac3b4bb82ac3
