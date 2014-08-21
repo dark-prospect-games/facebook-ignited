@@ -18,7 +18,8 @@
         }
     ],
     "require": {
-        "facebook/php-sdk": "*"
+        "facebook/php-sdk": "*",
+        "dark-prospect-games/obsidian-moon-engine": "dev-master"
     },
     "require-dev": {
         "phpdocumentor/phpdocumentor": "*"
