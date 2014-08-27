@@ -1,5 +1,9 @@
 ## Change Log
 
+#### v1.4.0
+* Refactored the librarry to be compatible with composer using namespaces and the PSR-0 Standard.
+* Removed spark functionality
+
 #### v1.3.2
 * Rewrote the commenting of Facebook Ignited to match PHPDoc Standards
 * Removed fb_post_to_feed_dialog, fb_request_dialog() and fb_send_dialog() in order to seperate the SDKs

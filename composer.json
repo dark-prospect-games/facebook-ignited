@@ -1,13 +1,12 @@
 {
     "name": "dark-prospect-games/facebook-ignited",
     "description": "A Facebook Library",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "keywords": [
         "library",
         "facebook"
     ],
     "homepage": "https://darkprospect.net",
-    "time": "2014-01-20",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -18,8 +17,7 @@
         }
     ],
     "require": {
-        "facebook/php-sdk": "*",
-        "dark-prospect-games/obsidian-moon-engine": "dev-master"
+        "facebook/php-sdk": "*"
     },
     "require-dev": {
         "phpdocumentor/phpdocumentor": "*"

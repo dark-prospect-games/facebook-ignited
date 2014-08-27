@@ -15,7 +15,6 @@ namespace DarkProspectGames\FacebookIgnited;
 
 use \Facebook;
 use \FacebookApiException;
-use \DarkProspectGames\ObsidianMoonEngine\Core;
 
 /**
  * Facebook Ignited by Dark Prospect Games
@@ -61,9 +60,15 @@ class FacebookIgnited
      * @param Core  $core   the obsidian moon engine core class
      * @param array $params configurations for Facebook Ignited and Facebook PHP SDK
      */
-    public function __construct(Core $core, $params)
+    public function __construct($core, $params = null)
     {
-        $this->core = $core;
+        if ($core instanceof \DarkProspectGames\ObsidianMoonEngine\Core) {
+            $this->core = $core;
+        } else {
+            if ($params == null) {
+                $params = $core;
+            }
+        }
         parse_str($_SERVER['QUERY_STRING'], $fb_query_strings);
         if (isset($fb_query_strings['state'])) {
             $_REQUEST['state'] = $fb_query_strings['state'];
