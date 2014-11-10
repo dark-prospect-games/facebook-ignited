@@ -1,5 +1,9 @@
 ## Change Log
 
+#### v1.5.0
+* Upgraded to the new Facebook PHP SDK v4 and refactored to match.
+* Converted to the MIT License in order to encourage contribution without fear of license restrictions.
+
 #### v1.4.0
 * Refactored the librarry to be compatible with composer using namespaces and the PSR-0 Standard.
 * Removed spark functionality

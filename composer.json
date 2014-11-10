@@ -1,13 +1,13 @@
 {
     "name": "dark-prospect-games/facebook-ignited",
     "description": "A Facebook Library",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "keywords": [
         "library",
         "facebook"
     ],
     "homepage": "https://darkprospect.net",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alfonso E Martinez, III",
@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "facebook/php-sdk": "*"
+        "facebook/php-sdk-v4" : "4.0.*"
     },
     "require-dev": {
         "phpdocumentor/phpdocumentor": "*"
